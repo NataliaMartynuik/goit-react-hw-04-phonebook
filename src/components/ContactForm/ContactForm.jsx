@@ -1,67 +1,59 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import { ContactForm, ContactLabel, ContactInput, ContactButton } from './ContactForm.styled';
 
-export default class Form extends Component {
- state = {
-    name: '',
-    number: '',
-    };
+const nameInputId = nanoid();
+const numberInputId = nanoid();
 
-    nameInputId = nanoid();
-    numberInputId = nanoid();
+export default function Form({ onSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-    handleChange = event => {
-        const { name, value } = event.currentTarget;
-
-        this.setState({ [name]: value });
-    };
-
-    handleSubmit = event => {
+   const handleSubmit = event => {
         event.preventDefault();
-        this.props.onSubmit(this.state)
-        this.reset();
+        onSubmit({ name, number})
+        reset();
     };
 
-    reset = () => {
-        this.setState({name: '', number: ''})
+    const reset = () => {
+        setName('');
+        setNumber('');
     }
 
-    render() {
-        return (
-           <ContactForm onSubmit={this.handleSubmit}>
-          <ContactLabel htmlFor={this.nameInputId}>
+    return (
+          <ContactForm onSubmit={handleSubmit}>
+          <ContactLabel htmlFor={nameInputId}>
             Name
           </ContactLabel>
           <ContactInput
   type="text"
   name="name"
-  value={this.state.name}
-  onChange={this.handleChange}                  
+  value={name}
+  onChange={e => setName(e.currentTarget.value)}                 
   pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
   title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
   required
-  id={this.nameInputId}                  
+  id={nameInputId}                  
           />
-       <ContactLabel htmlFor={this.numberInputId}>
+       <ContactLabel htmlFor={numberInputId}>
             Number
           </ContactLabel>    
          <ContactInput
   type="tel"
   name="number"
-  value={this.state.number}
-  onChange={this.handleChange}                  
+  value={number}
+  onChange={e => setNumber(e.currentTarget.value)}                 
   pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
   title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
   required
-  id={this.numberInputId}
+  id={numberInputId}
                 />
   <ContactButton type="submit">Add contact</ContactButton>
                 
       </ContactForm>  
         )
-    }
+  
 
 
 }
